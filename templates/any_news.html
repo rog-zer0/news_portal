@@ -1,0 +1,11 @@
+{% extends 'flatpages/default.html' %}
+
+<!-- Название у нас будет News -->
+{% block title %}
+News
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим новость, идентификатор которой был передан в url -->
+{% block content %}
+<h1>{{ news }}</h1>
+{% endblock content %}

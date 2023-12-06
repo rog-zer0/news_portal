@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .models import News
 
 
@@ -6,10 +6,10 @@ class NewsList(ListView):
     # Указываем модель, объекты которой мы будем выводить
     model = News
     # Поле, которое будет использоваться для сортировки объектов
-    ordering = '-creation_date'
+    ordering = 'updated_at'
     # Указываем имя шаблона, в котором будут все инструкции о том,
     # как именно пользователю должны быть показаны наши объекты
-    template_name = 'flatpages/default.html'
+    template_name = 'news.html'
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'news'
@@ -19,3 +19,8 @@ class NewsList(ListView):
 # Указываем поле сортировки данных модели (необязательно).
 # Записываем название шаблона.
 # Объявляем, как хотим назвать переменную в шаблоне.
+
+class NewsDetail(DetailView):
+    model = News
+    template_name = 'any_news.html'
+    context_object_name = 'news'
