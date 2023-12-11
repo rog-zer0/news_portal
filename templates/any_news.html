@@ -1,4 +1,5 @@
 {% extends 'flatpages/default.html' %}
+{%  load custom_filters %}
 
 <!-- Название у нас будет News -->
 {% block title %}
@@ -8,4 +9,8 @@ News
 <!-- В контенте на странице мы выводим новость, идентификатор которой был передан в url -->
 {% block content %}
 <h1>{{ news }}</h1>
+<h3>{{ news.created_at|date:'d M Y' }}</h3>
+<hr>
+<p>{{ news.content|remove_obscene }}</p>
+
 {% endblock content %}
