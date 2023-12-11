@@ -1,5 +1,6 @@
 <!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
+{%  load custom_filters %}
 
 <!-- Название у нас будет News-->
 {% block title %}
@@ -22,9 +23,9 @@
 
             {% for some_news in news %}
                 <tr>
-                    <td>{{ some_news.title }}</td>
+                    <td>{{ some_news.title|remove_obscene }}</td>
                     <td>{{ some_news.crated_at }}</td>
-                    <td>{{ some_news.content|truncatewords:20 }}</td>
+                    <td>{{ some_news.content|truncatewords:20|remove_obscene }}</td>
                 </tr>
             {% endfor %}
         </table>
