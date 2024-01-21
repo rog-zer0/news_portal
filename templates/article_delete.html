@@ -1,0 +1,11 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+  <h1>Delete Article</h1>
+  <p>Are you sure you want to delete "{{ object.title }}"?</p>
+  <form method="post" action="{% url 'article_delete' pk=object.pk %}">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'article_list' %}">Cancel</a>
+  </form>
+{% endblock %}
