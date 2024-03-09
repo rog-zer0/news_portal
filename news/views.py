@@ -1,11 +1,15 @@
 from datetime import datetime
-from django.views.generic import ListView, DetailView
+from django.views.generic import (
+   ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 from .models import News, Article
 from .filters import NewsFilter
 
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.urls import reverse_lazy
 
 class NewsList(ListView):
     model = News
@@ -74,38 +78,46 @@ class NewsSearch(ListView):
 
 class NewsArticleFormMixin:
     model = None
-    fields = ['title', 'content', 'date']
+    fields = ['title', 'content', 'category']
 
 
-class NewsCreateView(NewsArticleFormMixin, CreateView):
+class NewsCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_news')
+    raise_exception = True
     template_name = 'news_create.html'
     model = News
 
 
-class NewsEditView(NewsArticleFormMixin, UpdateView):
+
+class NewsEditView(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.edit_news')
     template_name = 'news_edit.html'
     model = News
     queryset = News.objects.all()
 
 
-class NewsDeleteView(DeleteView):
+class NewsDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_news')
     template_name = 'news_delete.html'
     model = News
     success_url = '/news/'
 
 
-class ArticleCreateView(NewsArticleFormMixin, CreateView):
+class ArticleCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.create_article')
     template_name = 'article_create.html'
     model = Article
 
 
-class ArticleEditView(NewsArticleFormMixin, UpdateView):
+class ArticleEditView(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.edit_article')
     template_name = 'article_edit.html'
     model = Article
     queryset = Article.objects.all()
 
 
-class ArticleDeleteView(DeleteView):
+class ArticleDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_article')
     template_name = 'article_delete.html'
     model = Article
     success_url = '/articles/'
