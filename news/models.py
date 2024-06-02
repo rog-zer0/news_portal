@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.validators import MinValueValidator
+from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class News(models.Model):
@@ -28,3 +31,16 @@ class Article(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     date = models.DateField()
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions'
+    )
