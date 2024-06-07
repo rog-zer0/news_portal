@@ -44,3 +44,10 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name='subscriptions'
     )
+    
+    
+class Subscriber(models.Model):
+    email = models.EmailField()
+    
+class NewsSender:
+    pass
