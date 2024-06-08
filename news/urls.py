@@ -3,11 +3,14 @@ from .views import NewsList, NewsDetail, NewsSearch
 from .views import NewsCreateView, NewsEditView, NewsDeleteView
 from .views import ArticleCreateView, ArticleEditView, ArticleDeleteView
 from .views import subscriptions
+from . import views
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
 
-   path('', NewsList.as_view()),
-   path('<int:pk>/', NewsDetail.as_view(), name='news_detail'),
+   path('news/<int:pk>/', cache_page(60 * 5)(views.DetailView.as_view()), name='news-detail'),
+   path('', cache_page(60)(views.NewsList.as_view()), name='home'),
+   #path('<int:pk>/', NewsDetail.as_view(), name='news_detail'),
    path('search/', NewsSearch.as_view(), name='news_search'),
    path('create/', NewsCreateView.as_view(), name='news_create'),
    path('<int:pk>/edit/', NewsEditView.as_view(), name='news_edit'),

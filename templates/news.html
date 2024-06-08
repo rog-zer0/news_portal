@@ -1,7 +1,7 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 {% load custom_tags %}
+{% load cache %}
 
 <!-- Название у нас будет News-->
 {% block title %}
@@ -11,6 +11,8 @@
 <!-- В контенте на странице мы выводим все новости -->
 {% block content %}
     <h1>Все новости</h1>
+    
+    {% cache 300 news_list %}
     <h3>{{ time_now|date:'d M Y' }}</h3>
     <h3> {{ news|length }} </h3>
     <hr>
@@ -25,7 +27,7 @@
             {% for some_news in news %}
                 <tr>
                     <td>{{ some_news.title|remove_obscene }}</td>
-                    <td>{{ some_news.crated_at }}</td>
+                    <td>{{ some_news.created_at }}</td>
                     <td>{{ some_news.content|truncatewords:20|remove_obscene }}</td>
                 </tr>
             {% endfor %}
@@ -33,7 +35,9 @@
     {% else %}
         <h2>Новостей нет</h2>
     {% endif %}
-
+    {% endcache %}
+    
+    {% cache 60 pagination %}
     {% if page_obj.has_previous %}
         {# Для каждой ссылки пагинации указываем обработку через новый тег #}
         <a href="?{% url_replace page=1 %}">1</a>
@@ -52,5 +56,6 @@
             <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
         {% endif %}
     {% endif %}
+    {% endcache %}
 
 {% endblock content %}
