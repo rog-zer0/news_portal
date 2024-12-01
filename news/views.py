@@ -1,20 +1,31 @@
 from datetime import datetime
-from django.views.generic import (
-   ListView, DetailView, CreateView, UpdateView, DeleteView
-)
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import News, Article, Subscription, Category
 from .filters import NewsFilter
 
 from django.shortcuts import render, get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
+from django.core.cache import cache
+
+import logging
+
+from django.http import HttpResponse
+
+logger = logging.getLogger(__name__)
+
+def index(request):
+
+    logger.error("Test!!")
+
+    return HttpResponse("Hello logging world.")
 
 
 class NewsList(ListView):
@@ -46,6 +57,16 @@ class NewsDetail(DetailView):
         queryset = super().get_queryset()
         self.filterset = NewsFilter(self.request.GET, queryset)
         return self.filterset.qs
+    
+    def get_object(self):
+        obj = super().get_object()
+        cache_key = obj.cache_key() #FIXME решить проблему с атрибутом cache_key
+        cached_obj = cache.get(cache_key)
+        if cached_obj is None:
+            cache.set(cache_key, obj)
+        else:
+            obj = cached_obj
+        return obj
 
 
 class NewsSearch(ListView):

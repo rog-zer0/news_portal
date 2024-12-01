@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+from django.core.cache import cache
 
 
 class News(models.Model):
@@ -13,9 +15,16 @@ class News(models.Model):
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, verbose_name='Категория')
     views = models.IntegerField(default=0, verbose_name='Количество просмотров')
 
+    def cache_key(self):
+        return f'news_{self.pk}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(self.cache_key())  # Удаление кэша при сохранении статьи
     def __str__(self):
         return self.title
-
+    
+    
 
 class Category(models.Model):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Наименование категории')
